@@ -36,6 +36,9 @@ A real-time investment portfolio dashboard built with **React 19**, **TypeScript
 
 ## Recent Updates (Changelog)
 - **April 26, 2026**: Added **Manual Refresh** to `AIPortfolioAnalyst`. Users can now click a refresh icon to bypass the daily cache and generate a fresh analysis.
+- **May 11, 2026**: Fixed **Portfolio News Section (`GlobalNewsFeed.tsx`)**.
+    - Resolved a critical bug where `fetchCompanyNews` and `NewsItem` type were used but not imported.
+    - (Improvements to global news fetching were reverted to ensure application stability).
 - **May 10, 2026**: Centralized all API calls (Finnhub, OpenAI) into a single **Supabase Edge Function (`market-proxy`)**. Refactored `src/services/marketData.ts` to remove all direct API keys from the frontend, significantly improving security and resolving potential CORS issues.
 - **May 10, 2026**: Updated **AI คิดว่า** translation to **อับดุลคิดว่า** in Thai locales.
 - **May 10, 2026**: Implemented **Gen Z User Roles** based on top investment sectors (e.g., Tech Bro, Crypto Bro) with full Thai localization support.

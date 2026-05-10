@@ -213,4 +213,3 @@ export const GlobalNewsFeed: React.FC = () => {
     </div>
   );
 };
-
