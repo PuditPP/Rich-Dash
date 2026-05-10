@@ -1,0 +1,74 @@
+{
+  "common": {
+    "search": "ค้นหา...",
+    "refresh_data": "รีเฟรชข้อมูล",
+    "last_updated": "ล่าสุด: {{time}}",
+    "settings": "การตั้งค่า",
+    "logout": "ออกจากระบบ",
+    "quick_add": "เพิ่มรายการด่วน"
+  },
+  "nav": {
+    "dashboard": "แดชบอร์ด",
+    "portfolio": "พอร์ตโฟลิโอ",
+    "watchlist": "ซื้อดีมั้ยน้า",
+    "news": "ข่าวสาร",
+    "ai_analyst": "AI อับดุลอินเทเลเจนท์",
+    "add_watchlist": "เพิ่มในรายการเฝ้าดู",
+    "main_navigation": "เมนูหลัก"
+  },
+  "holdings": {
+    "title": "รายการ",
+    "export_csv": "ส่งออก CSV",
+    "table": {
+      "ticker": "ตัวย่อ",
+      "quantity": "จำนวน",
+      "avg_cost": "ทุนเฉลี่ย",
+      "price": "ราคา",
+      "market_value": "มูลค่าตลาด",
+      "gain_loss": "กำไร/ขาดทุน",
+      "day_change": "เปลี่ยนแปลงวันนี้",
+      "weight": "สัดส่วน"
+    },
+    "details": {
+      "asset_details": "รายละเอียดสินทรัพย์",
+      "performance": "ผลตอบแทน",
+      "type": "ประเภท",
+      "sector": "อุตสาหกรรม",
+      "purchase_date": "วันที่ซื้อ",
+      "cost_basis": "เงินต้น",
+      "total_return": "กำไรรวม"
+    },
+    "actions": {
+      "buy_more": "ซื้อเพิ่ม",
+      "sell_part": "ขายออก",
+      "edit_position": "แก้ไขรายการ",
+      "remove": "ลบรายการ"
+    }
+  },
+  "auth": {
+    "user": "ผู้ใช้งาน"
+  },
+  "summary": {
+    "total_value": "มูลค่าการลงทุน",
+    "all_assets": "สินทรัพย์รวม",
+    "daily_change": "การเปลี่ยนแปลงรายวัน",
+    "overall_roi": "ผลตอบแทนรวม (ROI)",
+    "total_performance": "มูลค่าสินทรัพย์รวม"
+  },
+  "headlines": {
+    "portfolio_overview": "ภาพรวม",
+    "ai_analyst": "อับดุลคิดว่า",
+    "portfolio_news": "ข่าวสาร",
+    "asset_allocation": "สัดส่วนการลงทุน",
+    "sector_breakdown": "อุตสาหกรรม",
+    "performance_metrics": "ตัวชี้วัด"
+  },
+  "ai": {
+    "daily_strategy": "คำแนะนำประจำวัน",
+    "summarizing": "กำลังสรุปจ้า...",
+    "summarize_impact": "AI สรุปผลกระทบ",
+    "market_impact": "AI วิเคราะห์ผลกระทบตลาด",
+    "ask_placeholder": "ถาม อับดุล AI เกี่ยวกับพอร์ตโฟลิโอของคุณ...",
+    "read_more": "อ่านบทความเต็ม"
+  }
+}

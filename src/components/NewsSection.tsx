@@ -1,0 +1,217 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Newspaper, ExternalLink, Sparkles, Loader2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { fetchCompanyNews, summarizeNewsImpact, getNewsFallbackImage, type NewsItem } from '../services/marketData';
+import { useTranslation } from 'react-i18next';
+
+interface NewsSectionProps {
+  symbol: string;
+}
+
+export const NewsSection: React.FC<NewsSectionProps> = ({ symbol }) => {
+  const { t, i18n } = useTranslation();
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [summarizingId, setSummarizingId] = useState<number | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showScrollButtons, setShowScrollButtons] = useState(false);
+
+  const loadNews = async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchCompanyNews(symbol);
+      setNews(data);
+    } catch (err) {
+      console.error('Failed to load news');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadNews();
+  }, [symbol]);
+
+  useEffect(() => {
+    const checkScroll = () => {
+      if (scrollContainerRef.current) {
+        setShowScrollButtons(
+          scrollContainerRef.current.scrollWidth > scrollContainerRef.current.clientWidth
+        );
+      }
+    };
+
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [news]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      scrollContainerRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleSummarize = async (item: NewsItem) => {
+    if (item.aiSummary) return;
+    
+    setSummarizingId(item.id);
+    try {
+      const summary = await summarizeNewsImpact(item.headline, item.summary, i18n.language);
+      setNews(prev => prev.map(n => 
+        n.id === item.id ? { ...n, aiSummary: summary } : n
+      ));
+    } catch (err) {
+      console.error('AI Summary failed');
+    } finally {
+      setSummarizingId(null);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+        <Loader2 className="w-6 h-6 animate-spin mb-2" />
+        <p className="text-sm">Fetching latest news for {symbol}...</p>
+      </div>
+    );
+  }
+
+  if (news.length === 0) {
+    return (
+      <div className="py-8 text-center text-gray-500 border border-dashed border-border rounded-xl">
+        <p className="text-sm">No recent news found for {symbol}.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+          <Newspaper className="w-4 h-4" />
+          {t('headlines.portfolio_news')}
+        </h4>
+        <div className="flex items-center gap-2">
+          {showScrollButtons && (
+            <div className="flex items-center gap-1 bg-sidebar border border-border rounded-lg p-0.5">
+              <button 
+                onClick={() => scroll('left')}
+                className="p-1 hover:bg-card-hover rounded-md transition-all text-gray-400"
+              >
+                <ChevronLeft className="w-3 h-3" />
+              </button>
+              <button 
+                onClick={() => scroll('right')}
+                className="p-1 hover:bg-card-hover rounded-md transition-all text-gray-400"
+              >
+                <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+          <button 
+            onClick={loadNews}
+            className="p-1 hover:bg-card-hover rounded-full transition-colors text-gray-500 hover:text-white"
+          >
+            <RefreshCw className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+      
+      <div 
+        ref={scrollContainerRef}
+        className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x snap-mandatory"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {news.map((item) => (
+          <div 
+            key={item.id} 
+            className="bg-card border border-border rounded-xl p-4 hover:border-amber-500/50 transition-all group min-w-[300px] max-w-[300px] snap-start flex flex-col justify-between"
+          >
+            <div className="space-y-3">
+              <div className="flex justify-between gap-4">
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center gap-2 text-[10px] text-gray-500 uppercase font-bold">
+                    <a 
+                      href={item.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-amber-400 transition-colors flex items-center gap-1"
+                    >
+                      {item.source}
+                      <ExternalLink className="w-2 h-2" />
+                    </a>
+                    <span>•</span>
+                    <span>{new Date(item.datetime * 1000).toLocaleDateString()}</span>
+                  </div>
+                  <a 
+                    href={item.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block group-hover:text-amber-400 transition-colors"
+                  >
+                    <h5 className="font-bold text-sm leading-tight line-clamp-2">
+                      {item.headline}
+                    </h5>
+                  </a>
+                  
+                  {item.aiSummary ? (
+                    <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 mt-2 animate-in fade-in slide-in-from-left-2 duration-300">
+                      <div className="flex items-center gap-2 text-amber-400 text-[10px] font-bold uppercase mb-1">
+                        <Sparkles className="w-3 h-3" />
+                        {t('ai.market_impact')}
+                      </div>
+                      <p className="text-[11px] text-amber-100 italic leading-relaxed line-clamp-3">
+                        "{item.aiSummary}"
+                      </p>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => handleSummarize(item)}
+                      disabled={summarizingId === item.id}
+                      className="mt-2 flex items-center gap-2 text-[10px] font-bold uppercase py-1.5 px-3 bg-amber-600/10 text-amber-400 hover:bg-amber-600/20 rounded-lg transition-all border border-amber-500/20 disabled:opacity-50"
+                    >
+                      {summarizingId === item.id ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          {t('ai.summarizing')}
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3 h-3" />
+                          {t('ai.summarize_impact')}
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+                
+                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-sidebar border border-border">
+                  <img 
+                    src={item.image || getNewsFallbackImage(symbol, item.source)} 
+                    alt="" 
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <a 
+              href={item.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-medium text-gray-400 hover:text-white transition-colors"
+            >
+              {t('ai.read_more')}
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+

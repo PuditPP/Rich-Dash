@@ -1,0 +1,77 @@
+{
+  "common": {
+    "search": "Search...",
+    "refresh_data": "Refresh Data",
+    "last_updated": "Last: {{time}}",
+    "settings": "Settings",
+    "logout": "Logout",
+    "quick_add": "Quick Add Position"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "portfolio": "Portfolio",
+    "watchlist": "Watchlist",
+    "news": "News",
+    "ai_analyst": "AI Analyst",
+    "add_watchlist": "Add to Watchlist",
+    "main_navigation": "Main Navigation"
+  },
+  "holdings": {
+    "title": "Holdings",
+    "export_csv": "Export CSV",
+    "table": {
+      "ticker": "Ticker",
+      "quantity": "Quantity",
+      "avg_cost": "Avg Cost",
+      "price": "Price",
+      "market_value": "Market Value",
+      "gain_loss": "Gain/Loss",
+      "day_change": "Day Change",
+      "weight": "Weight"
+    },
+    "details": {
+      "asset_details": "Asset Details",
+      "performance": "Performance",
+      "type": "Type",
+      "sector": "Sector",
+      "purchase_date": "Purchase Date",
+      "cost_basis": "Cost Basis",
+      "total_return": "Total Return"
+    },
+    "actions": {
+      "buy_more": "Buy More",
+      "sell_part": "Sell Part",
+      "edit_position": "Edit Position",
+      "remove": "Remove"
+    }
+  },
+  "auth": {
+    "user": "User"
+  },
+  "summary": {
+    "total_value": "Total Portfolio Value",
+    "all_assets": "Across all assets",
+    "daily_change": "Daily Change",
+    "overall_roi": "Overall ROI",
+    "total_performance": "Total Asset Value"
+  },
+  "headlines": {
+    "portfolio_overview": "Portfolio Overview",
+    "ai_analyst": "AI Portfolio Analyst",
+    "portfolio_news": "Portfolio News",
+    "asset_allocation": "Asset Allocation",
+    "sector_breakdown": "Sector Breakdown",
+    "performance_metrics": "Performance Metrics"
+  },
+  "ai": {
+    "daily_strategy": "Daily Strategy",
+    "summarizing": "Summarizing...",
+    "summarize_impact": "AI Summarize Impact",
+    "market_impact": "AI Market Impact",
+    "ask_placeholder": "Ask anything about your portfolio...",
+    "read_more": "Read full article"
+  }
+}
+
+
+
