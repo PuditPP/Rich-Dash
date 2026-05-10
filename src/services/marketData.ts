@@ -79,15 +79,15 @@ export const fetchMarketQuotes = async (symbols: string[]): Promise<MarketQuote[
       const { symbol: targetSymbol } = getExchangeSymbol(symbol);
       const data = await callProxy('quote', { symbol: targetSymbol });
       
-      if (data.c === 0 && data.pc === 0 && targetSymbol !== symbol.toUpperCase()) {
+      if (!data || typeof data.c === 'undefined' || (data.c === 0 && data.pc === 0 && targetSymbol !== symbol.toUpperCase())) {
         const fallbackData = await callProxy('quote', { symbol: symbol.toUpperCase() });
-        if (fallbackData.c !== 0 || fallbackData.pc !== 0) {
+        if (fallbackData && typeof fallbackData.c !== 'undefined' && (fallbackData.c !== 0 || fallbackData.pc !== 0)) {
           return { symbol: symbol.toUpperCase(), price: fallbackData.c, priorClose: fallbackData.pc };
         }
         return null;
       }
 
-      if (data.c === 0 && data.pc === 0) return null;
+      if (typeof data.c === 'undefined' || (data.c === 0 && data.pc === 0)) return null;
       
       return { symbol: symbol.toUpperCase(), price: data.c, priorClose: data.pc };
     });

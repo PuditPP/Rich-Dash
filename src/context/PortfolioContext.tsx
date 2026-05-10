@@ -501,8 +501,8 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
         const history = histories[index];
         return {
           ...h,
-          currentPrice: quote ? quote.price : h.currentPrice,
-          priorClose: quote ? quote.priorClose : h.priorClose,
+          currentPrice: (quote && typeof quote.price === 'number') ? quote.price : h.currentPrice,
+          priorClose: (quote && typeof quote.priorClose === 'number') ? quote.priorClose : h.priorClose,
           history: (history && history.length > 0) ? history : h.history
         };
       });
@@ -511,8 +511,8 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
         const quote = quotes.find(q => q.symbol === w.symbol.toUpperCase());
         return {
           ...w,
-          currentPrice: quote ? quote.price : w.currentPrice,
-          priorClose: quote ? quote.priorClose : w.priorClose
+          currentPrice: (quote && typeof quote.price === 'number') ? quote.price : w.currentPrice,
+          priorClose: (quote && typeof quote.priorClose === 'number') ? quote.priorClose : w.priorClose
         };
       });
 
