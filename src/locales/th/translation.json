@@ -61,7 +61,8 @@
     "portfolio_news": "ข่าวสาร",
     "asset_allocation": "สัดส่วนการลงทุน",
     "sector_breakdown": "อุตสาหกรรม",
-    "performance_metrics": "ตัวชี้วัด"
+    "performance_metrics": "ตัวชี้วัด",
+    "syncing_market": "กำลังเชื่อมต่อข้อมูลตลาดสด..."
   },
   "ai": {
     "daily_strategy": "คำแนะนำประจำวัน",

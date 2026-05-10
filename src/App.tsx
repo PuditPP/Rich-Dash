@@ -13,11 +13,12 @@ import { ProfileSettings } from './components/ProfileSettings';
 import { Auth } from './components/Auth';
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import { useTranslation } from 'react-i18next';
+import { Loader2 } from 'lucide-react';
 
 import type { Holding } from './types';
 
 const DashboardContent: React.FC = () => {
-  const { summary, user } = usePortfolio();
+  const { summary, user, isLoading, holdings } = usePortfolio();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -47,6 +48,20 @@ const DashboardContent: React.FC = () => {
 
   if (!user) {
     return <Auth />;
+  }
+
+  if (isLoading && holdings.length === 0) {
+    return (
+      <div className="flex h-screen bg-background items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-amber-500 animate-spin" />
+          <div className="text-center">
+            <p className="text-xl font-bold text-white tracking-tight">{t('headlines.syncing_market') || 'Syncing Market Data'}</p>
+            <p className="text-gray-500 text-sm mt-1">Connecting to live valuation services...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

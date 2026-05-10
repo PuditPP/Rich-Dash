@@ -98,6 +98,9 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
   const loadData = useCallback(async (userId: string) => {
     setIsLoading(true);
     try {
+      let mappedHoldings: Holding[] = [];
+      let mappedWatchlist: WatchlistItem[] = [];
+
       // Load Holdings
       const holdingsResult = await supabase
         .from('holdings')
@@ -108,7 +111,7 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
 
       if (holdingsResult.data) {
         // Map Supabase columns to our Holding interface
-        const mappedHoldings: Holding[] = holdingsResult.data.map(item => ({
+        mappedHoldings = holdingsResult.data.map(item => ({
           id: item.id,
           symbol: item.symbol,
           name: item.name || item.symbol,
@@ -122,7 +125,6 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
           note: item.note,
           history: item.history || []
         }));
-        setHoldings(mappedHoldings);
       }
 
       // Load Watchlist
@@ -134,14 +136,13 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (watchlistResult.error) {
         console.warn('Watchlist load error:', watchlistResult.error);
       } else if (watchlistResult.data) {
-        const mappedWatchlist: WatchlistItem[] = watchlistResult.data.map(item => ({
+        mappedWatchlist = watchlistResult.data.map(item => ({
           id: item.id,
           symbol: item.symbol,
           name: item.name || item.symbol,
           currentPrice: item.current_price || 0,
           priorClose: item.prior_close || 0
         }));
-        setWatchlist(mappedWatchlist);
       }
 
       // Load Transactions
@@ -165,31 +166,12 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
 
       // Automatically refresh prices once data is loaded from DB
-      if (holdingsResult.data || watchlistResult.data) {
-        const h = holdingsResult.data ? holdingsResult.data.map(item => ({
-          id: item.id,
-          symbol: item.symbol,
-          name: item.name || item.symbol,
-          assetType: (item.symbol === 'BTC' ? 'Bitcoin' : (item.asset_type || 'Stock')) as AssetType,
-          sector: (item.symbol === 'BTC' ? 'Crypto' : (item.sector || 'Other')) as Sector,
-          quantity: item.quantity,
-          averageCost: item.average_cost,
-          currentPrice: item.current_price || item.average_cost,
-          priorClose: item.prior_close || item.average_cost,
-          purchaseDate: item.purchase_date,
-          note: item.note,
-          history: item.history || []
-        })) : [];
-        
-        const w = watchlistResult.data ? watchlistResult.data.map(item => ({
-          id: item.id,
-          symbol: item.symbol,
-          name: item.name || item.symbol,
-          currentPrice: item.current_price || 0,
-          priorClose: item.prior_close || 0
-        })) : [];
-
-        refreshPrices(h, w);
+      // We AWAIT this so the UI doesn't show stale prices first
+      if (mappedHoldings.length > 0 || mappedWatchlist.length > 0) {
+        await refreshPrices(mappedHoldings, mappedWatchlist);
+      } else {
+        setHoldings([]);
+        setWatchlist([]);
       }
     } catch (err) {
       console.error('Error loading data:', err);

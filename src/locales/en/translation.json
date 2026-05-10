@@ -61,7 +61,8 @@
     "portfolio_news": "Portfolio News",
     "asset_allocation": "Asset Allocation",
     "sector_breakdown": "Sector Breakdown",
-    "performance_metrics": "Performance Metrics"
+    "performance_metrics": "Performance Metrics",
+    "syncing_market": "Syncing Market Data"
   },
   "ai": {
     "daily_strategy": "Daily Strategy",
