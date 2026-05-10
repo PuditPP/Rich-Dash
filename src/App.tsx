@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sidebar, TopNav } from './components/Layout';
+import { Sidebar, TopNav, MobileBottomNav } from './components/Layout';
 import { SummaryCards } from './components/SummaryCards';
 import { TotalPerformanceCard } from './components/TotalPerformanceCard';
 import { GlobalNewsFeed } from './components/GlobalNewsFeed';
@@ -80,7 +80,7 @@ const DashboardContent: React.FC = () => {
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
         
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8 custom-scrollbar">
           {activeTab === 'dashboard' && (
             <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -143,6 +143,11 @@ const DashboardContent: React.FC = () => {
           )}
         </main>
       </div>
+
+      <MobileBottomNav 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
       {isAddModalOpen && (
         <AddPositionForm 

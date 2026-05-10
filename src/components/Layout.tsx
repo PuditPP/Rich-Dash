@@ -13,9 +13,34 @@ interface SidebarProps {
   setIsOpen: (isOpen: boolean) => void;
 }
 
+const getGenZRole = (sector: string, language: string) => {
+  const isThai = language.startsWith('th');
+  
+  switch (sector) {
+    case 'Technology': return isThai ? 'พ่อหนุ่มสายเทค' : 'Tech Bro';
+    case 'Crypto': return isThai ? 'พ่อหนุ่มคลิปโต' : 'Crypto Bro';
+    case 'Healthcare': return isThai ? 'สุชกายสบายใจ' : 'Biohacker';
+    case 'Financials': return isThai ? 'เงินมีปัญหาเรียกหาพี่' : 'Finance Bro';
+    case 'Consumer': return isThai ? 'ช้อปเธอเกินไป' : 'Shopaholic';
+    case 'Energy': return isThai ? 'หล่อลื่น' : 'Oil Baron';
+    case 'Utilities': return isThai ? 'คุณยายขายทุกอย่าง' : 'Dividend Daddy';
+    case 'Communication': return isThai ? 'คนดังนั่งชิว' : 'Influencer';
+    case 'Industrial': return isThai ? 'ก่อร่างสร้างตัว' : 'Builder';
+    case 'Real Estate': return isThai ? 'เจ้าที่เจ้าทาง' : 'Landlord';
+    case 'Materials': return isThai ? 'ยอดนักขุด' : 'Gold Digger';
+    default: return isThai ? 'จอมฉวยโอกาส' : 'Diamond Hands';
+  }
+};
+
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onAddWatchlist, isOpen, setIsOpen }) => {
-  const { watchlist, isLoading, refreshPrices, summary, signOut, removeFromWatchlist } = usePortfolio();
-  const { t } = useTranslation();
+  const { watchlist, isLoading, refreshPrices, summary, signOut, removeFromWatchlist, user, sectorBreakdown } = usePortfolio();
+  const { t, i18n } = useTranslation();
+
+  const topSector = sectorBreakdown.length > 0 
+    ? [...sectorBreakdown].sort((a, b) => b.value - a.value)[0].name 
+    : 'Other';
+  
+  const userRole = getGenZRole(topSector, i18n.language);
 
   const navItems = [
     { id: 'dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
@@ -60,6 +85,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onAdd
           >
             <X className="w-6 h-6" />
           </button>
+        </div>
+
+        {/* Mobile User Profile Section */}
+        <div className="md:hidden p-8 border-b border-border bg-sidebar/50">
+          <div className="flex flex-col items-center text-center gap-4">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-600 to-purple-600 flex items-center justify-center text-3xl font-bold border-2 border-amber-500/50 shrink-0 shadow-2xl overflow-hidden">
+              {user?.user_metadata?.avatar_url ? (
+                <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'
+              )}
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-lg font-bold text-white truncate mb-1">
+                {user?.user_metadata?.full_name || t('auth.user')}
+              </span>
+              <span className="text-xs text-amber-500 font-bold uppercase tracking-[0.2em] bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                {userRole}
+              </span>
+            </div>
+          </div>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
@@ -167,25 +213,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onAdd
       </div>
     </>
   );
-};
-
-const getGenZRole = (sector: string, language: string) => {
-  const isThai = language.startsWith('th');
-  
-  switch (sector) {
-    case 'Technology': return isThai ? 'พ่อหนุ่มสายเทค' : 'Tech Bro';
-    case 'Crypto': return isThai ? 'พ่อหนุ่มคลิปโต' : 'Crypto Bro';
-    case 'Healthcare': return isThai ? 'สุชกายสบายใจ' : 'Biohacker';
-    case 'Financials': return isThai ? 'เงินมีปัญหาเรียกหาพี่' : 'Finance Bro';
-    case 'Consumer': return isThai ? 'ช้อปเธอเกินไป' : 'Shopaholic';
-    case 'Energy': return isThai ? 'หล่อลื่น' : 'Oil Baron';
-    case 'Utilities': return isThai ? 'คุณยายขายทุกอย่าง' : 'Dividend Daddy';
-    case 'Communication': return isThai ? 'คนดังนั่งชิว' : 'Influencer';
-    case 'Industrial': return isThai ? 'ก่อร่างสร้างตัว' : 'Builder';
-    case 'Real Estate': return isThai ? 'เจ้าที่เจ้าทาง' : 'Landlord';
-    case 'Materials': return isThai ? 'ยอดนักขุด' : 'Gold Digger';
-    default: return isThai ? 'จอมฉวยโอกาส' : 'Diamond Hands';
-  }
 };
 
 export const TopNav: React.FC<{ 
@@ -324,14 +351,53 @@ export const TopNav: React.FC<{
           <span className="text-sm font-bold text-white leading-none">{user?.user_metadata?.full_name || t('auth.user')}</span>
           <span className="text-[10px] text-amber-500 font-bold mt-1 uppercase tracking-wider">{userRole}</span>
         </div>
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 to-purple-600 flex items-center justify-center text-xs font-bold border border-border shrink-0 overflow-hidden">
-          {user?.user_metadata?.avatar_url ? (
-            <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-          ) : (
-            user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'
-          )}
+        
+        <div className="flex flex-col items-center">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 to-purple-600 flex items-center justify-center text-xs font-bold border border-border shrink-0 overflow-hidden">
+            {user?.user_metadata?.avatar_url ? (
+              <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'
+            )}
+          </div>
+          <span className="sm:hidden text-[8px] text-amber-500 font-bold uppercase tracking-tighter mt-1 leading-none text-center max-w-[48px] truncate">
+            {userRole}
+          </span>
         </div>
       </div>
+    </div>
+  );
+};
+
+export const MobileBottomNav: React.FC<{ 
+  activeTab: string; 
+  setActiveTab: (tab: string) => void;
+}> = ({ activeTab, setActiveTab }) => {
+  const { t } = useTranslation();
+  
+  const navItems = [
+    { id: 'dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
+    { id: 'holdings', label: t('nav.portfolio'), icon: Table },
+    { id: 'settings', label: t('common.settings'), icon: Settings },
+  ];
+
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-sidebar border-t border-border z-40 flex items-center justify-around px-2">
+      {navItems.map((item) => (
+        <button
+          key={item.id}
+          onClick={() => setActiveTab(item.id)}
+          className={`flex flex-col items-center justify-center gap-1 min-w-[64px] transition-colors relative ${
+            activeTab === item.id ? 'text-amber-500' : 'text-gray-500 hover:text-gray-300'
+          }`}
+        >
+          <item.icon className="w-5 h-5" />
+          <span className="text-[10px] font-bold uppercase tracking-tighter">{item.label}</span>
+          {activeTab === item.id && (
+            <div className="absolute -bottom-2 w-8 h-1 bg-amber-500 rounded-t-full" />
+          )}
+        </button>
+      ))}
     </div>
   );
 };
