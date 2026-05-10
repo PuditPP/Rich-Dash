@@ -391,25 +391,35 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({ onEdit }) => {
                       </div>
                     </div>
 
-                    <div className="flex gap-3">
-                      <button 
-                        onClick={() => setTransactionMode({ holding: h, type: 'buy' })}
-                        className="flex-1 bg-success/10 border border-success/20 text-success py-2.5 rounded-xl text-xs font-bold active:scale-95 transition-transform"
-                      >
-                        Buy-Sell
-                      </button>
-                      <button 
-                        onClick={() => onEdit(h)}
-                        className="flex-1 bg-sidebar border border-border text-gray-400 py-2.5 rounded-xl text-xs font-bold active:scale-95 transition-transform"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => removePosition(h.id)}
-                        className="p-2.5 bg-danger/10 border border-danger/20 text-danger rounded-xl active:scale-95 transition-transform"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => setTransactionMode({ holding: h, type: 'buy' })}
+                          className="flex-1 bg-success/10 border border-success/20 text-success py-2.5 rounded-xl text-xs font-bold active:scale-95 transition-transform"
+                        >
+                          Buy
+                        </button>
+                        <button 
+                          onClick={() => setTransactionMode({ holding: h, type: 'sell' })}
+                          className="flex-1 bg-danger/10 border border-danger/20 text-danger py-2.5 rounded-xl text-xs font-bold active:scale-95 transition-transform"
+                        >
+                          Sell
+                        </button>
+                      </div>
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => onEdit(h)}
+                          className="flex-1 bg-sidebar border border-border text-gray-400 py-2.5 rounded-xl text-xs font-bold active:scale-95 transition-transform"
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => removePosition(h.id)}
+                          className="p-2.5 bg-danger/10 border border-danger/20 text-danger rounded-xl active:scale-95 transition-transform"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                     
                     <div className="pt-2 border-t border-border/50">
